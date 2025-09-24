@@ -106,15 +106,15 @@ bool bacnet_port_deinit(void){
     switch (BACnet_Port_Select){
         #if defined(BACDL_BIP)
             case PORT_TYPE_BIP:
-                status = bacnet_port_ipv4_init();
+                status = bacnet_port_ipv4_deinit();
                 break;
         #elif defined(BACDL_BIP6)
             case PORT_TYPE_BIP6:
-                status = bacnet_port_ipv6_init();
+                status = bacnet_port_ipv6_deinit();
                 break;
         #elif defined(BACDL_MSTP)
             case PORT_TYPE_MSTP:
-                status = bacnet_port_mstp_init();
+                status = bacnet_port_mstp_deinit();
                 break;
         #endif
         default:
