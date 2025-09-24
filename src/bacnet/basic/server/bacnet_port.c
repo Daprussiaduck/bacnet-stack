@@ -119,8 +119,8 @@ bool bacnet_port_deinit(void){
         #endif
         default:
             // Invalid port type
-            BACnet_Port_Select = PORT_TYPE_BIP;
-            status = bacnet_port_ipv4_init();
+            //BACnet_Port_Select = PORT_TYPE_BIP;
+            //status = bacnet_port_ipv4_init();
     }
     return status;
 }
