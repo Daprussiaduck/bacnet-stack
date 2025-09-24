@@ -19,8 +19,12 @@
 extern "C" {
 #endif /* __cplusplus */
 
+BACNET_STACK_EXPORT
 void bacnet_port_mstp_task(uint16_t elapsed_seconds);
+BACNET_STACK_EXPORT
 bool bacnet_port_mstp_init(void);
+BACNET_STACK_EXPORT
+bool bacnet_port_mstp_deinit(void);
 
 #ifdef __cplusplus
 }

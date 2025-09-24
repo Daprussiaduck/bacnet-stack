@@ -26,6 +26,8 @@ BACNET_STACK_EXPORT
 void bacnet_port_ipv6_task(uint16_t elapsed_seconds);
 BACNET_STACK_EXPORT
 bool bacnet_port_ipv6_init(void);
+BACNET_STACK_EXPORT
+bool bacnet_port_ipv6_deinit(void);
 
 #ifdef __cplusplus
 }

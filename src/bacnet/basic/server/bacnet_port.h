@@ -22,6 +22,8 @@ BACNET_STACK_EXPORT
 bool bacnet_port_init(void);
 BACNET_STACK_EXPORT
 void bacnet_port_task(void);
+BACNET_STACK_EXPORT
+bool bacnet_port_set_port(BACNET_PORT_TYPE portType);
 
 #ifdef __cplusplus
 }

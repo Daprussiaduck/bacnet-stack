@@ -98,4 +98,12 @@ bool bacnet_port_ipv4_init(void)
 
     return true;
 }
+
+/**
+ * Deinitialize the network port object.
+ */
+bool bacnet_port_ipv4_deinit(void){
+    bip_cleanup();
+    return true;
+}
 #endif

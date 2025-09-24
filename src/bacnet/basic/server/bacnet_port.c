@@ -29,6 +29,8 @@
 /* timer used to renew Foreign Device Registration */
 static struct mstimer BACnet_Task_Timer;
 
+static BACNET_PORT_TYPE BACnet_Port_Select = PORT_TYPE_BIP;
+
 /**
  * @brief Periodic tasks for the BACnet datalink layer
  */
@@ -43,33 +45,113 @@ void bacnet_port_task(void)
         /* presume that the elapsed time is the interval time */
         elapsed_milliseconds = mstimer_interval(&BACnet_Task_Timer);
         elapsed_seconds = elapsed_milliseconds / 1000;
-#if defined(BACDL_BIP)
-        bacnet_port_ipv4_task(elapsed_seconds);
-#elif defined(BACDL_BIP6)
-        bacnet_port_ipv6_task(elapsed_seconds);
-#elif defined(BACDL_MSTP)
-        bacnet_port_mstp_task(elapsed_seconds);
-#else
-        /* nothing to do */
-        (void)elapsed_seconds;
-#endif
+        switch (BACnet_Port_Select){
+            #if defined(BACDL_BIP)
+                case PORT_TYPE_BIP:
+                    bacnet_port_ipv4_task(elapsed_seconds);
+                    break;
+            #elif defined(BACDL_BIP6)
+                case PORT_TYPE_BIP6:
+                    bacnet_port_ipv6_task(elapsed_seconds);
+                    break;
+            #elif defined(BACDL_MSTP)
+                case PORT_TYPE_MSTP:
+                    bacnet_port_mstp_task(elapsed_seconds);
+                    break;
+            #else
+                /* nothing to do */
+                (void)elapsed_seconds;
+            #endif
+            default:
+                // Invalid port setting, reset to BIP
+                BACnet_Port_Select = PORT_TYPE_BIP;
+                bacnet_port_ipv4_task(elapsed_seconds);
+        }
     }
 }
 
 /**
  * @brief Initialize the datalink network port
  */
-bool bacnet_port_init(void)
-{
+bool bacnet_port_init(void){
     bool status = false;
     /* start the 1 second timer for non-critical cyclic tasks */
     mstimer_set(&BACnet_Task_Timer, 1000L);
-#if defined(BACDL_BIP)
-    status = bacnet_port_ipv4_init();
-#elif defined(BACDL_BIP6)
-    status = bacnet_port_ipv6_init();
-#elif defined(BACDL_MSTP)
-    status = bacnet_port_mstp_init();
-#endif
+    switch (BACnet_Port_Select){
+        #if defined(BACDL_BIP)
+            case PORT_TYPE_BIP:
+                status = bacnet_port_ipv4_init();
+                break;
+        #elif defined(BACDL_BIP6)
+            case PORT_TYPE_BIP6:
+                status = bacnet_port_ipv6_init();
+                break;
+        #elif defined(BACDL_MSTP)
+            case PORT_TYPE_MSTP:
+                status = bacnet_port_mstp_init();
+                break;
+        #endif
+        default:
+            // Invalid port type
+            BACnet_Port_Select = PORT_TYPE_BIP;
+            status = bacnet_port_ipv4_init();
+    }
+    return status;
+}
+
+bool bacnet_port_deinit(void){
+    bool status = false;
+    /* start the 1 second timer for non-critical cyclic tasks */
+    mstimer_set(&BACnet_Task_Timer, 1000L);
+    switch (BACnet_Port_Select){
+        #if defined(BACDL_BIP)
+            case PORT_TYPE_BIP:
+                status = bacnet_port_ipv4_init();
+                break;
+        #elif defined(BACDL_BIP6)
+            case PORT_TYPE_BIP6:
+                status = bacnet_port_ipv6_init();
+                break;
+        #elif defined(BACDL_MSTP)
+            case PORT_TYPE_MSTP:
+                status = bacnet_port_mstp_init();
+                break;
+        #endif
+        default:
+            // Invalid port type
+            BACnet_Port_Select = PORT_TYPE_BIP;
+            status = bacnet_port_ipv4_init();
+    }
+    return status;
+}
+
+bool bacnet_port_set_port(BACNET_PORT_TYPE portType){
+    bool status = false;
+    bacnet_port_deinit();
+    switch (BACnet_Port_Select){
+        #if defined(BACDL_BIP)
+            case PORT_TYPE_BIP:
+                BACnet_Port_Select = PORT_TYPE_BIP;
+                status = true;
+                break;
+        #elif defined(BACDL_BIP6)
+            case PORT_TYPE_BIP6:
+                BACnet_Port_Select = PORT_TYPE_BIP6;
+                status = true;
+                break;
+        #elif defined(BACDL_MSTP)
+            case PORT_TYPE_MSTP:
+                BACnet_Port_Select = PORT_TYPE_MSTP;
+                status = true;
+                break;
+        #endif
+        default:
+            // Invalid port type
+            BACnet_Port_Select = PORT_TYPE_BIP;
+            status = true;
+    }
+    if (status){
+        bacnet_port_init();
+    }
     return status;
 }

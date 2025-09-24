@@ -101,4 +101,13 @@ bool bacnet_port_ipv6_init(void)
 
     return true;
 }
+
+/**
+ * Deinitialize the network port object.
+ * @return true if successful
+ */
+bool bacnet_port_ipv6_init(void){
+    bip6_cleanup();
+    return true;
+}
 #endif
