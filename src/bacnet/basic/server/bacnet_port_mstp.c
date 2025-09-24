@@ -72,7 +72,7 @@ bool bacnet_port_mstp_init(void)
  * Deinitialize the network port object.
  * @return true if successful
  */
-bool bacnet_port_mstp_init(void){
+bool bacnet_port_mstp_deinit(void){
     dlmstp_cleanup();
     return true;
 }
