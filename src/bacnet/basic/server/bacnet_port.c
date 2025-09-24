@@ -63,9 +63,7 @@ void bacnet_port_task(void)
                 (void)elapsed_seconds;
             #endif
             default:
-                // Invalid port setting, reset to BIP
-                BACnet_Port_Select = PORT_TYPE_BIP;
-                bacnet_port_ipv4_task(elapsed_seconds);
+                // Invalid port setting
         }
     }
 }
@@ -93,16 +91,12 @@ bool bacnet_port_init(void){
         #endif
         default:
             // Invalid port type
-            //BACnet_Port_Select = PORT_TYPE_BIP;
-            //status = bacnet_port_ipv4_init();
     }
     return status;
 }
 
 bool bacnet_port_deinit(void){
     bool status = false;
-    /* start the 1 second timer for non-critical cyclic tasks */
-    mstimer_set(&BACnet_Task_Timer, 1000L);
     switch (BACnet_Port_Select){
         #if defined(BACDL_BIP)
             case PORT_TYPE_BIP:
@@ -119,8 +113,6 @@ bool bacnet_port_deinit(void){
         #endif
         default:
             // Invalid port type
-            //BACnet_Port_Select = PORT_TYPE_BIP;
-            //status = bacnet_port_ipv4_init();
     }
     return status;
 }
@@ -148,8 +140,6 @@ bool bacnet_port_set_port(BACNET_PORT_TYPE portType){
         #endif
         default:
             // Invalid port type
-            BACnet_Port_Select = PORT_TYPE_BIP;
-            status = true;
     }
     if (status){
         bacnet_port_init();
