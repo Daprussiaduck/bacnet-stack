@@ -120,8 +120,7 @@ bool bacnet_port_deinit(void){
 bool bacnet_port_set_port(BACNET_PORT_TYPE portType){
     bool status = false;
     bacnet_port_deinit();
-    BACnet_Port_Select = portType;
-    switch (BACnet_Port_Select){
+    switch (portType){
         #if defined(BACDL_BIP)
             case PORT_TYPE_BIP:
                 BACnet_Port_Select = PORT_TYPE_BIP;

@@ -15,6 +15,7 @@
 // #include "bacport.h"
 
 /** @file linux/bip-init.c  Initializes BACnet/IP interface (Linux). */
+|
 
 static bool BIP_Debug = false;
 
